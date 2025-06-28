@@ -29,7 +29,6 @@ def reset_session_context(context: Token) -> None:
     session_context.reset(context)
 
 
-
 engines = {
     "writer": create_async_engine(str(config.POSTGRES_URL), pool_recycle=3600),
     "reader": create_async_engine(str(config.POSTGRES_URL), pool_recycle=3600),

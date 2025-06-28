@@ -25,7 +25,6 @@ class Config(BaseConfig):
     )
 
 
-
 config = Config()
 
 print(config.ENVIRONMENT)
