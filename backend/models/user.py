@@ -10,8 +10,8 @@ from core.database.session import Base
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[BigInteger] = mapped_column(primary_key=True, autoincrement=True)
-    uuid: Mapped[UUID] = mapped_column(default=uuid4(), unique=True, nullable=False)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4(), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(
         Unicode(255), nullable=False, unique=True, index=True
     )

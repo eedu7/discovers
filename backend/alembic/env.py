@@ -53,7 +53,7 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection):
-    context.config(connection=connection, target_metadata=target_metadata)
+    context.configure(connection=connection, target_metadata=target_metadata)
 
     with context.begin_transaction():
         context.run_migrations()
@@ -66,7 +66,7 @@ async def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_async_engine(app_config.POSTGRES_URL, poolclass=pool.NullPool)
+    connectable = create_async_engine(str(app_config.POSTGRES_URL), poolclass=pool.NullPool)
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
