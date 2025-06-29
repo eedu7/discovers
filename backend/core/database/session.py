@@ -1,15 +1,12 @@
 from contextvars import ContextVar, Token
-from typing import Any
+from typing import Union
 
-from sqlalchemy import ClauseElement, Connection, Engine
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_scoped_session,
-    async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm.session import _EntityBindKey, _SessionBind
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 from sqlalchemy.sql.expression import Delete, Insert, Update
 
 from core.config import config
@@ -35,31 +32,32 @@ engines = {
 }
 
 
-class RoutingAsyncSession(AsyncSession):
-    def get_bind(
-        self,
-        mapper: _EntityBindKey | None = None,
-        clause: ClauseElement | None = None,
-        bind: _SessionBind | None = None,
-        **kwargs: Any,
-    ) -> Engine | Connection:
-        if isinstance(clause, (Insert, Update, Delete)):
+class RoutingSession(Session):
+    def get_bind(self, mapper=None, clause=None, **kwargs):
+        if self._flushing or isinstance(clause, (Update, Delete, Insert)):
             return engines["writer"].sync_engine
         return engines["reader"].sync_engine
 
 
-async_session_factory = async_sessionmaker(
-    class_=RoutingAsyncSession,
+async_session_factory = sessionmaker(
+    class_=AsyncSession,
+    sync_session_class=RoutingSession,
     expire_on_commit=False,
 )
 
-session: AsyncSession | async_scoped_session = async_scoped_session(
+session: Union[AsyncSession, async_scoped_session] = async_scoped_session(
     session_factory=async_session_factory,
     scopefunc=get_session_context,
 )
 
 
 async def get_session():
+    """
+    Get the database session.
+    This can be used for dependency injection.
+
+    :return: The database session.
+    """
     try:
         yield session
     finally:

@@ -15,5 +15,6 @@ def standalone_session(func):
             raise exception
         finally:
             await session.remove()
-            reset_session_context(context)
-        return _standalone_session
+            reset_session_context(context=context)
+
+    return _standalone_session

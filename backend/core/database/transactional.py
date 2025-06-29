@@ -1,7 +1,7 @@
 from enum import Enum
 from functools import wraps
 
-from core.database.session import session
+from core.database import session
 
 
 class Propagation(Enum):
@@ -49,7 +49,7 @@ class Transactional:
         return result
 
     async def _run_required_new(self, function, args, kwargs) -> None:
-        await session.begin()
+        session.begin()
         result = await function(*args, **kwargs)
         await session.commit()
         return result
