@@ -1,7 +1,7 @@
 from enum import StrEnum
 from pathlib import Path
 
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, computed_field
 from pydantic_settings import BaseSettings
 
 
@@ -20,12 +20,25 @@ class BaseConfig(BaseSettings):
 
 class Config(BaseConfig):
     ENVIRONMENT: str = EnvironmentType.DEVELOPMENT
-    POSTGRES_URL: PostgresDsn = PostgresDsn(
-        "postgresql+asyncpg://user:password@127.0.0.1:5432/db-name"
-    )
+    POSTGRES_DB: str = ""
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str = ""
+    POSTGRES_HOST: str
+    POSTGRES_PORT: int = 5432
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def POSTGRES_URL(self) -> PostgresDsn:
+        return PostgresDsn.build(
+            scheme="postgresql+asyncpg",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_HOST,
+            port=self.POSTGRES_PORT,
+            path=self.POSTGRES_DB,
+        )
 
 
 config = Config()
 
-print(config.ENVIRONMENT)
 print(config.POSTGRES_URL)

@@ -1,0 +1,12 @@
+services:
+    postgres:
+        image: postgres:17.5-bookworm
+        restart: always
+        env_file:
+            - ./.env
+        volumes:
+            - postgresData:/var/lib/postgresql/data
+        ports:
+            - "${POSTGRES_PORT}:5432"
+volumes:
+    postgresData:
