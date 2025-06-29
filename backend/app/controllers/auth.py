@@ -1,3 +1,5 @@
+from pydantic import EmailStr
+
 from app.models import User
 from app.repositories import UserRepository
 from core.controller import BaseController
@@ -10,7 +12,7 @@ class AuthController(BaseController[User]):
         self.user_repository = user_repository
 
     @Transactional(propagation=Propagation.REQUIRED)
-    async def register(self, email: str, password: str, username: str):
+    async def register(self, *, email: EmailStr, password: str, username: str):
         return await self.user_repository.create(
             {"email": email, "password": password, "username": username}
         )
