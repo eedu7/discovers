@@ -11,12 +11,8 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    uuid: Mapped[UUID] = mapped_column(
-        UUID(as_uuid=True), default=uuid4(), unique=True, nullable=False
-    )
-    email: Mapped[str] = mapped_column(
-        Unicode(255), nullable=False, unique=True, index=True
-    )
+    uuid: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4(), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(Unicode(255), nullable=False, unique=True, index=True)
     username: Mapped[str] = mapped_column(Unicode(255), nullable=False, unique=True)
     password: Mapped[str] = mapped_column(Unicode(255), nullable=False)
 

@@ -1,3 +1,4 @@
+
 from pydantic import EmailStr
 
 from app.exceptions import BadRequestException
@@ -27,6 +28,15 @@ class AuthController(BaseController[User]):
 
         hashed_password = PasswordHandler.hash(password)
 
-        return await self.user_repository.create(
-            {"email": email, "password": hashed_password, "username": username}
-        )
+        return await self.user_repository.create({"email": email, "password": hashed_password, "username": username})
+
+    async def login(self, email: EmailStr, password: str):
+        user: User = await self.user_repository.user_exists(email=email)
+
+        if not user:
+            raise BadRequestException("No account found with the provided email address.")
+
+        if not PasswordHandler.verify(plain_password=password, hashed_password=user.password):
+            raise BadRequestException("Incorrect password. Please try again.")
+
+        # TODO: Generate and return JWT access and refresh token
