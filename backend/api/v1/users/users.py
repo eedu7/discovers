@@ -1,34 +1,22 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from app.models import User
-from core.database.session import session
-from core.database.transactional import Propagation, Transactional
-from core.repository.base import BaseRepository
+from app.controllers import AuthController
+from core.factory import Factory
 
 router = APIRouter()
 
 
-user_crud = BaseRepository(User, session)
-
-
-@Transactional(propagation=Propagation.REQUIRED)
-async def register():
-    user_data = {
-        "username": "John Doe",
-        "email": "john.doe@example.com",
-        "password": "password",
-    }
-
-    await user_crud.create(user_data)
+@router.get("/register")
+async def register_user(
+    auth_controller: AuthController = Depends(Factory().get_auth_controller),
+):
+    return await auth_controller.register(
+        email="john.doe@gmail.com", password="password", username="John Doe"
+    )
 
 
 @router.get("/")
-async def create():
-    await register()
-    return {"message": "Created successfully"}
-
-
-@router.get("/all")
-async def all():
-    data = await user_crud.get_all()
-    return {"data": data}
+async def get_all(
+    auth_controller: AuthController = Depends(Factory().get_auth_controller),
+):
+    return await auth_controller.get_all()
