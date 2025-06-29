@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 
+from api.v1.auth import auth_router
 from api.v1.users import user_router
 
 v1_router = APIRouter()
@@ -14,4 +15,5 @@ async def home():
     )
 
 
+v1_router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 v1_router.include_router(user_router, prefix="/users", tags=["User"])
