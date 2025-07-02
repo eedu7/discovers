@@ -15,7 +15,7 @@ from core.fastapi.middlewares import (
 )
 
 
-def on_auth_error(request: Request, exc: Exception | CustomException):
+def on_auth_error(_: Request, exc: Exception | CustomException):
     if isinstance(exc, CustomException):
         status_code = exc.code
         error_code = exc.error_code
