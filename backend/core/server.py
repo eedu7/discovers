@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import List
 
 from fastapi import FastAPI, Request
@@ -6,7 +7,25 @@ from starlette.middleware import Middleware
 
 from api import router
 from core.exceptions import CustomException
-from core.fastapi.middlewares import AuthenticationMiddleware, AuthBackend, SQLAlchemyMiddleware, ResponseLoggerMiddleware
+from core.fastapi.middlewares import (
+    AuthBackend,
+    AuthenticationMiddleware,
+    ResponseLoggerMiddleware,
+    SQLAlchemyMiddleware,
+)
+
+
+def on_auth_error(request: Request, exc: Exception | CustomException):
+    if isinstance(exc, CustomException):
+        status_code = exc.code
+        error_code = exc.error_code
+        message = exc.message
+    else:
+        status_code = HTTPStatus.UNAUTHORIZED
+        error_code = None
+        message = str(exc)
+
+    return JSONResponse(status_code=status_code, content={"error_code": error_code, "message": message})
 
 
 def init_router(app: FastAPI) -> None:
@@ -25,7 +44,9 @@ def make_middleware() -> List[Middleware]:
             AuthenticationMiddleware,
             backend=AuthBackend(),
         ),
-        Middleware(SQLAlchemyMiddleware), Middleware(ResponseLoggerMiddleware)]
+        Middleware(SQLAlchemyMiddleware),
+        Middleware(ResponseLoggerMiddleware),
+    ]
 
 
 def create_app() -> FastAPI:
