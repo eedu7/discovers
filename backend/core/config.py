@@ -25,6 +25,9 @@ class Config(BaseConfig):
     POSTGRES_PASSWORD: str = ""
     POSTGRES_HOST: str
     POSTGRES_PORT: int = 5432
+    JWT_SECRET_KEY: str = "super-secret-key"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRE_MINUTES: int = 60 * 24
 
     @computed_field  # type: ignore[prop-decorator]
     @property

@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware import Middleware
 
 from api import router
-from app.exceptions import CustomException
+from core.exceptions import CustomException
 from core.fastapi.middlewares.response_logger import ResponseLoggerMiddleware
 from core.fastapi.middlewares.sqlalchemy import SQLAlchemyMiddleware
 
