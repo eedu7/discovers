@@ -6,8 +6,7 @@ from starlette.middleware import Middleware
 
 from api import router
 from core.exceptions import CustomException
-from core.fastapi.middlewares.response_logger import ResponseLoggerMiddleware
-from core.fastapi.middlewares.sqlalchemy import SQLAlchemyMiddleware
+from core.fastapi.middlewares import AuthenticationMiddleware, AuthBackend, SQLAlchemyMiddleware, ResponseLoggerMiddleware
 
 
 def init_router(app: FastAPI) -> None:
@@ -21,7 +20,12 @@ def init_listeners(app: FastAPI) -> None:
 
 
 def make_middleware() -> List[Middleware]:
-    return [Middleware(SQLAlchemyMiddleware), Middleware(ResponseLoggerMiddleware)]
+    return [
+        Middleware(
+            AuthenticationMiddleware,
+            backend=AuthBackend(),
+        ),
+        Middleware(SQLAlchemyMiddleware), Middleware(ResponseLoggerMiddleware)]
 
 
 def create_app() -> FastAPI:
