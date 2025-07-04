@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -91,9 +92,9 @@ export const LoginForm = () => {
                     tabIndex={3}
                     disabled={form.formState.isSubmitting || !form.formState.isValid}
                 >
-                    Log in
+                    {form.formState.isSubmitting ? <Loader2Icon className="repeat-infinite animate-spin" /> : "Log in"}
                 </Button>
-                <p className="text-center text-sm">
+                <p className="text-center text-xs md:text-sm">
                     Don't have an account?&nbsp;
                     <Link
                         href="/auth/register"

@@ -99,7 +99,6 @@ export const RegisterForm = () => {
                         </FormItem>
                     )}
                 />
-
                 <Button
                     type="submit"
                     className="w-full font-semibold"
