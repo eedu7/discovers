@@ -1,24 +1,21 @@
+from typing import Dict
+
 from pydantic import EmailStr
-from sqlalchemy import exists, or_, select
+from sqlalchemy import exists, select
 
 from app.models import User
 from core.repository import BaseRepository
 
 
 class UserRepository(BaseRepository[User]):
-    async def user_exists(self, *, email: EmailStr | None = None, username: str | None = None):
-        if not email and not username:
-            raise ValueError(
-                "Missing required input: at least one of 'email' or 'username' must be"
-                " provided to check if the user exists."
-            )
-
-        conditions = []
+    async def user_exists(self, *, email: EmailStr | None = None, username: str | None = None) -> Dict[str, bool]:
+        result = {}
 
         if email:
-            conditions.append(User.email == email)
+            query = select(exists().where(User.email == email))
+            result["email_exists"] = await self.session.scalar(query)
         if username:
-            conditions.append(User.username == username)
+            query = select(exists().where(User.username == username))
+            result["username_exists"] = await self.session.scalar(query)
 
-        query = select(exists().where(or_(*conditions)))
-        return await self.session.scalar(query)
+        return result
