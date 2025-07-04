@@ -18,6 +18,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(({
         <div className="*:not-first:mt-2">
             <div className="relative">
                 <Input
+                    ref={ref}
                     id={id}
                     className="pe-9"
                     placeholder="Password"
