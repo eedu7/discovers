@@ -1,24 +1,22 @@
 "use client";
 
 import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { loginFormSchema } from "@/app/auth/schemas";
+
+import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/app/auth/_components/PasswordInput";
-import { Button } from "@/components/ui/button";
-
-const formSchema = z.object({
-    email: z.string().email(),
-    password: z.string(),
-});
 
 export const LoginForm = () => {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof loginFormSchema>>({
+        resolver: zodResolver(loginFormSchema),
         defaultValues: {
             email: "",
             password: "",
@@ -26,7 +24,7 @@ export const LoginForm = () => {
         mode: "all",
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof loginFormSchema>) {
         console.log(values);
     }
 
@@ -81,7 +79,7 @@ export const LoginForm = () => {
                 <p className="text-right">
                     <Link
                         href="/auth/forgot-password"
-                        className="w-full text-right text-sm font-semibold"
+                        className="w-full text-right text-sm font-semibold hover:text-accent-foreground cursor-pointer hover:underline"
                         prefetch={false}
                     >
                         Forgot Password?
@@ -99,7 +97,7 @@ export const LoginForm = () => {
                     Don't have an account?&nbsp;
                     <Link
                         href="/auth/register"
-                        className="cursor-pointer font-semibold underline"
+                        className="cursor-pointer font-semibold underline hover:text-accent-foreground"
                     >
                         Register
                     </Link>

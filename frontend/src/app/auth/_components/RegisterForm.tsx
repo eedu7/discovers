@@ -1,27 +1,23 @@
 "use client";
 
 import React from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { registerFormSchema } from "@/app/auth/schemas";
+
+import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/app/auth/_components/PasswordInput";
-import { Button } from "@/components/ui/button";
-
-import { Loader2Icon } from "lucide-react";
-
-const formSchema = z.object({
-    username: z.string(),
-    email: z.string().email(),
-    password: z.string(),
-});
 
 export const RegisterForm = () => {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof registerFormSchema>>({
+        resolver: zodResolver(registerFormSchema),
         defaultValues: {
             username: "",
             email: "",
@@ -30,7 +26,7 @@ export const RegisterForm = () => {
         mode: "all",
     });
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: z.infer<typeof registerFormSchema>) {
         console.log(values);
     }
 
@@ -120,7 +116,7 @@ export const RegisterForm = () => {
                     Already have an account?&nbsp;
                     <Link
                         href="/auth/login"
-                        className="cursor-pointer font-semibold underline"
+                        className="cursor-pointer font-semibold underline hover:text-accent-foreground"
                         prefetch={false}
                     >
                         Log in
