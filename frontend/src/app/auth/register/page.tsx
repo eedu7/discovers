@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { PasswordInput } from "@/components/PasswordInput";
+import { PasswordInput } from "@/app/auth/_components/PasswordInput";
 import { Loader2Icon } from "lucide-react";
 
 const formSchema = z.object({
