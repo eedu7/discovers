@@ -1,10 +1,11 @@
 import React from "react";
 import { Metadata } from "next";
 
+import { LoginRegisterCardFooter } from "@/app/auth/_components/LoginRegisterCardFooter";
+import { RegisterForm } from "@/app/auth/_components/RegisterForm";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { RegisterForm } from "@/app/auth/_components/RegisterForm";
-import { LoginRegisterCardFooter } from "@/app/auth/_components/LoginRegisterCardFooter";
 
 export const metadata: Metadata = {
     title: "Discover | Register",
