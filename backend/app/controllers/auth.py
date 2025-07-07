@@ -30,7 +30,7 @@ class AuthController(BaseController[User]):
         return await self.user_repository.create({"email": email, "password": hashed_password, "username": username})
 
     async def login(self, email: EmailStr, password: str):
-        user: User = await self.user_repository.user_exists(email=email)
+        user: bool = await self.user_repository.user_exists(email=email)
 
         if not user:
             raise BadRequestException("No account found with the provided email address.")
