@@ -13,3 +13,9 @@ class UserRepository(BaseRepository[User]):
         else:
             query = select(exists().where(User.username == username))
             return await self.session.scalar(query)
+
+    async def get_by_email(self, email: str) -> User | None:
+        return await self.get_by(field="email", value=email)
+
+    async def get_by_username(self, username: str) -> User | None:
+        return await self.get_by(field="username", value=username)
