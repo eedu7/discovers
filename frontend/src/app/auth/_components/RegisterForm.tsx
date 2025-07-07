@@ -57,6 +57,7 @@ export const RegisterForm = () => {
                         </FormItem>
                     )}
                 />
+
                 <FormField
                     control={form.control}
                     name="email"
@@ -78,6 +79,7 @@ export const RegisterForm = () => {
                         </FormItem>
                     )}
                 />
+
                 <FormField
                     control={form.control}
                     name="password"
@@ -99,6 +101,7 @@ export const RegisterForm = () => {
                         </FormItem>
                     )}
                 />
+
                 <Button
                     type="submit"
                     className="w-full font-semibold"
@@ -111,6 +114,7 @@ export const RegisterForm = () => {
                         "Register"
                     )}
                 </Button>
+
                 <p className="text-center text-xs md:text-sm">
                     Already have an account?&nbsp;
                     <Link

@@ -1,9 +1,12 @@
 "use client";
 
 import React, { forwardRef, InputHTMLAttributes, useId, useState } from "react";
+
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
+
+import { cn } from "@/lib/utils";
 
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
     className?: string;
@@ -20,7 +23,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(({
                 <Input
                     ref={ref}
                     id={id}
-                    className="pe-9"
+                    className={cn("pe-9", className)}
                     placeholder="Password"
                     type={isVisible ? "text" : "password"}
                     {...props}
@@ -49,3 +52,4 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(({
         </div>
     );
 });
+PasswordInput.displayName = "PasswordInput";

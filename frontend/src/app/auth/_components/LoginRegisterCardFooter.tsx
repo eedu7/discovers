@@ -8,7 +8,7 @@ export const LoginRegisterCardFooter = () => {
     return (
         <CardFooter>
             <p className="text-center text-sm">
-                By continuing, you agree to Discover's&nbsp;
+                By continuing, you agree to Discover&apos;s&nbsp;
                 <Link
                     className="cursor-pointer font-semibold underline hover:text-accent-foreground"
                     href="#"

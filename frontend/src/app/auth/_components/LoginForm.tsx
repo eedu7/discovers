@@ -86,6 +86,7 @@ export const LoginForm = () => {
                         Forgot Password?
                     </Link>
                 </p>
+
                 <Button
                     type="submit"
                     className="w-full font-semibold"
@@ -95,7 +96,7 @@ export const LoginForm = () => {
                     {form.formState.isSubmitting ? <Loader2Icon className="repeat-infinite animate-spin" /> : "Log in"}
                 </Button>
                 <p className="text-center text-xs md:text-sm">
-                    Don't have an account?&nbsp;
+                    Don&apos;t have an account?&nbsp;
                     <Link
                         href="/auth/register"
                         className="cursor-pointer font-semibold underline hover:text-accent-foreground"
