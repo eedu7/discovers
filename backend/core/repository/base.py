@@ -11,8 +11,8 @@ ModelType = TypeVar("ModelType", bound=Base)
 
 
 class BaseRepository(Generic[ModelType]):
-    def __init__(self, model: Type[ModelType], db_session: AsyncSession):
-        self.session = db_session
+    def __init__(self, model: Type[ModelType], session: AsyncSession):
+        self.session = session
         self.model_class: Type[ModelType] = model
 
     async def create(self, attributes: dict[str, Any] = None) -> ModelType:

@@ -22,6 +22,6 @@ class UserController(BaseController[User]):
         exists = await self.user_repository.user_exists(email=email, username=username)
 
         if not exists:
-            return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "User does not exists"})
+            return JSONResponse(status_code=status.HTTP_200_OK, content=False)
 
         return JSONResponse(status_code=status.HTTP_200_OK, content=exists)

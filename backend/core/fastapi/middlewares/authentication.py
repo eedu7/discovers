@@ -30,7 +30,7 @@ class AuthBackend(AuthenticationBackend):
         try:
             payload = JWTHandler.decode(token)
             # TODO: Change to UUID, after changing the CurrentUser ID to "UUID", also updating the "Token" payload
-            user_id = payload.get("user_id")
+            user_id = payload.get("sub")
         except JWTError:
             return False, current_user
 

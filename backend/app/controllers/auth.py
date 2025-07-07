@@ -1,11 +1,15 @@
+from datetime import UTC, datetime, timedelta
+
 from pydantic import EmailStr
 
 from app.models import User
 from app.repositories import UserRepository
+from app.schemas.extras import Token
+from core.config import config
 from core.controller import BaseController
 from core.database import Propagation, Transactional
 from core.exceptions import BadRequestException
-from core.security import PasswordHandler
+from core.security import JWTHandler, PasswordHandler
 
 
 class AuthController(BaseController[User]):
@@ -15,14 +19,10 @@ class AuthController(BaseController[User]):
 
     @Transactional(propagation=Propagation.REQUIRED)
     async def register(self, *, email: EmailStr, password: str, username: str):
-        user = await self.user_repository.user_exists(email=email)
-
-        if user:
+        if await self.user_repository.user_exists(email=email):
             raise BadRequestException("User already exists with this email.")
 
-        user = await self.user_repository.user_exists(username=username)
-
-        if user:
+        if await self.user_repository.user_exists(username=username):
             raise BadRequestException("User already exists with this username.")
 
         hashed_password = PasswordHandler.hash(password)
@@ -30,12 +30,28 @@ class AuthController(BaseController[User]):
         return await self.user_repository.create({"email": email, "password": hashed_password, "username": username})
 
     async def login(self, email: EmailStr, password: str):
-        user: bool = await self.user_repository.user_exists(email=email)
+        exists: bool = await self.user_repository.user_exists(email=email)
 
-        if not user:
+        if not exists:
             raise BadRequestException("No account found with the provided email address.")
 
-        if not PasswordHandler.verify(plain_password=password, hashed_password=user.password):
+        user: User = await self.user_repository.get_by_email(str(email))
+
+        hashed_password: str = user.password
+
+        if not PasswordHandler.verify(plain_password=password, hashed_password=hashed_password):
             raise BadRequestException("Incorrect password. Please try again.")
 
-        # TODO: Generate and return JWT access and refresh token
+        payload = {
+            "sub": str(user.id),
+            "username": user.username,
+            "email": user.email,
+            "iat": datetime.now(UTC) + timedelta(minutes=config.JWT_EXPIRE_MINUTES),
+            "token_type": "access",
+        }
+
+        access_token = JWTHandler.encode(payload)
+        payload["token_type"] = "refresh"
+        refresh_token = JWTHandler.encode(payload)
+
+        return Token(access_token=access_token, refresh_token=refresh_token)

@@ -15,7 +15,7 @@ class UserRepository(BaseRepository[User]):
             return await self.session.scalar(query)
 
     async def get_by_email(self, email: str) -> User | None:
-        return await self.get_by(field="email", value=email)
+        return await self.get_by(field="email", value=email, unique=True)
 
     async def get_by_username(self, username: str) -> User | None:
-        return await self.get_by(field="username", value=username)
+        return await self.get_by(field="username", value=username, unique=True)
