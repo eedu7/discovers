@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr
 
@@ -16,10 +16,16 @@ async def get_all(
     return await auth_controller.get_all()
 
 
-@router.get("/exists")
+@router.get("/exists", status_code=status.HTTP_200_OK)
 async def check_user_exists(
     username: str | None = None,
     email: EmailStr | None = None,
     user_controller: UserController = Depends(Factory().get_user_controller),
 ) -> JSONResponse:
-    return await user_controller.check_user_exists(email, username)
+    if email:
+        exists = await user_controller.check_user_exists(email=email)
+
+    exists = await user_controller.check_user_exists(username=username)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content={"exists": exists, "field": "username", "value": username}
+    )
