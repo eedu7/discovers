@@ -3,6 +3,7 @@ from pydantic import EmailStr
 from app.models import User
 from app.repositories import UserRepository
 from app.schemas.extras import Token
+from core.config import config
 from core.controller import BaseController
 from core.database import Propagation, Transactional
 from core.exceptions import BadRequestException
@@ -44,7 +45,10 @@ class AuthController(BaseController[User]):
             "username": user.username,
             "email": user.email,
         }
-        access_token = JWTHandler.encode(payload)
-        refresh_token = JWTHandler.encode(payload, token_type="refresh")
 
-        return Token(access_token=access_token, refresh_token=refresh_token)
+        return Token(
+            access_token=JWTHandler.encode(payload),
+            refresh_token=JWTHandler.encode(payload, token_type="refresh"),
+            token_type="bearer",
+            expires_in=config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        )
