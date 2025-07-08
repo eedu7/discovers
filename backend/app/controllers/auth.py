@@ -1,11 +1,8 @@
-from datetime import UTC, datetime, timedelta
-
 from pydantic import EmailStr
 
 from app.models import User
 from app.repositories import UserRepository
 from app.schemas.extras import Token
-from core.config import config
 from core.controller import BaseController
 from core.database import Propagation, Transactional
 from core.exceptions import BadRequestException
@@ -46,12 +43,8 @@ class AuthController(BaseController[User]):
             "sub": str(user.id),
             "username": user.username,
             "email": user.email,
-            "iat": datetime.now(UTC) + timedelta(minutes=config.JWT_EXPIRE_MINUTES),
-            "token_type": "access",
         }
-
         access_token = JWTHandler.encode(payload)
-        payload["token_type"] = "refresh"
-        refresh_token = JWTHandler.encode(payload)
+        refresh_token = JWTHandler.encode(payload, token_type="refresh")
 
         return Token(access_token=access_token, refresh_token=refresh_token)

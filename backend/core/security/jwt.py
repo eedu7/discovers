@@ -1,11 +1,11 @@
-from datetime import UTC, datetime, timedelta
 from http import HTTPStatus
-from typing import Any, Dict
+from typing import Any, Dict, Literal
 
 from jose import ExpiredSignatureError, JWTError, jwt
 
 from core.config import config
 from core.exceptions import CustomException
+from core.utils import get_timestamp
 
 
 class JWTDecodeError(CustomException):
@@ -18,15 +18,22 @@ class JWTExpiredError(CustomException):
     message = "Token expired"
 
 
+TokenType = Literal["access", "refresh"]
+
+
 class JWTHandler:
-    secret_key = config.JWT_SECRET_KEY
-    algorithm = config.JWT_ALGORITHM
-    expire_minutes = config.JWT_EXPIRE_MINUTES
+    secret_key: str = config.JWT_SECRET_KEY
+    algorithm: str = config.JWT_ALGORITHM
+    access_token_expiry: int = config.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+    refresh_token_expiry: int = config.JWT_REFRESH_TOKEN_EXPIRE_MINUTES
 
     @classmethod
-    def encode(cls, payload: Dict[str, Any]) -> str:
-        expire = datetime.now(UTC) + timedelta(minutes=cls.expire_minutes)
-        payload.update({"exp": expire})
+    def encode(cls, payload: Dict[str, Any], token_type: TokenType = "access") -> str:
+        expire_minutes: int = cls.access_token_expiry if token_type == "access" else cls.refresh_token_expiry
+
+        expire = get_timestamp(minutes=expire_minutes)
+        iat = get_timestamp()
+        payload.update({"exp": expire, "iat": iat, "token_type": token_type})
         return jwt.encode(payload, cls.secret_key, algorithm=cls.algorithm)
 
     @classmethod
