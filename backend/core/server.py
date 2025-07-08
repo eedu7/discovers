@@ -2,9 +2,9 @@ from http import HTTPStatus
 from typing import List
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware import Middleware
-from fastapi.middleware.cors import CORSMiddleware
 
 from api import router
 from core.exceptions import CustomException
@@ -42,11 +42,7 @@ def init_listeners(app: FastAPI) -> None:
 def make_middleware() -> List[Middleware]:
     return [
         Middleware(
-            CORSMiddleware,
-            allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"]
+            CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
         ),
         Middleware(
             AuthenticationMiddleware,
